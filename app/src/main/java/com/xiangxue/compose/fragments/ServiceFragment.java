@@ -1,4 +1,4 @@
-package com.xiangxue.arch_demo.fragments;
+package com.xiangxue.compose.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
-import com.xiangxue.arch_demo.R;
-import com.xiangxue.arch_demo.databinding.FragmentOthersBinding;
+import com.xiangxue.compose.R;
+import com.xiangxue.compose.databinding.FragmentOthersBinding;
 
 /**
  * Created by Vishal Patolia on 18-Feb-18.

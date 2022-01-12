@@ -1,9 +1,9 @@
-package com.xiangxue.arch_demo.application;
+package com.xiangxue.compose.application;
 
 
 import android.app.Application;
 
-import com.xiangxue.arch_demo.BuildConfig;
+import com.xiangxue.compose.BuildConfig;
 import com.xiangxue.network.base.INetworkRequiredInfo;
 
 /**

@@ -1,4 +1,4 @@
-package com.xiangxue.arch_demo.utils;
+package com.xiangxue.compose.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

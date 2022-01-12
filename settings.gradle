@@ -1,2 +1,3 @@
 include ':app', ':network', ':news'
 rootProject.name='arch_demo'
+include ':base'

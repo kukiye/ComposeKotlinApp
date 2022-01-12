@@ -1,4 +1,4 @@
-package com.xiangxue.arch_demo.application;
+package com.xiangxue.compose.application;
 
 import android.app.Application;
 

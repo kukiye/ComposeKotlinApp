@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import com.xiangxue.news.homefragment.newslist.composables.titlepicturecomposabl
 import com.xiangxue.news.homefragment.newslist.composables.titlepicturecomposable.TitlePictureComposableModel
 import kotlinx.coroutines.launch
 import java.util.ArrayList
+import com.kuki.base.compose.lazycolumn.LoadMoreListHandler
 
 /**
  * Created by Allen on 2017/7/20.
@@ -42,13 +44,18 @@ class NewsListFragment : Fragment() {
         load()
         return ComposeView(requireContext()).apply {
             setContent {
+
+                //记录列表状态
+                val listState = rememberLazyListState()
+
                 LazyColumn(
                     contentPadding = PaddingValues(
                         start = 16.dp,
                         end = 16.dp,
                         bottom = 10.dp,
                         top = 10.dp
-                    )
+                    ),
+                    state = listState
                 ) {
                     items(contentlist.size) {
                         if (contentlist[it] is TitleComposableModel) {
@@ -57,6 +64,11 @@ class NewsListFragment : Fragment() {
                             TitlePictureComposable(contentlist[it] as TitlePictureComposableModel)
                         }
                     }
+                }
+
+                //上拉加载更多
+                LoadMoreListHandler(listState = listState) {
+                    load()
                 }
             }
         }
@@ -78,10 +90,12 @@ class NewsListFragment : Fragment() {
                     }
                     for (source in (newsListBean.body)!!.pagebean!!.contentlist!!) {
                         if (source.imageurls != null && source.imageurls.size > 1) {
-                            contentlist.add(TitlePictureComposableModel(
-                                source.title ?: "",
-                                source.imageurls[0].url ?: ""
-                            ))
+                            contentlist.add(
+                                TitlePictureComposableModel(
+                                    source.title ?: "",
+                                    source.imageurls[0].url ?: ""
+                                )
+                            )
                         } else {
                             contentlist.add(TitleComposableModel(source.title ?: ""))
                         }

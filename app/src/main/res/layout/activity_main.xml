@@ -37,7 +37,7 @@
             android:layout_gravity="bottom"
             android:background="@android:color/white"
             app:labelVisibilityMode="labeled"
-            app:layout_behavior=".utils.BottomNavigationBehavior"
+            app:layout_behavior="com.xiangxue.compose.utils.BottomNavigationBehavior"
             design:menu="@menu/tab_menu" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

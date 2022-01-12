@@ -1,5 +1,5 @@
 
-package com.xiangxue.arch_demo.utils;
+package com.xiangxue.compose.utils;
 
 import android.content.Context;
 import android.content.res.TypedArray;

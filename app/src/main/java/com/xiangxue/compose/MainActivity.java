@@ -1,4 +1,4 @@
-package com.xiangxue.arch_demo;
+package com.xiangxue.compose;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
@@ -15,15 +15,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.xiangxue.arch_demo.R;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
-import com.xiangxue.arch_demo.databinding.ActivityMainBinding;
-import com.xiangxue.arch_demo.fragments.AccountFragment;
-import com.xiangxue.arch_demo.fragments.CategoryFragment;
-import com.xiangxue.arch_demo.fragments.ServiceFragment;
+import com.xiangxue.compose.databinding.ActivityMainBinding;
+import com.xiangxue.compose.fragments.AccountFragment;
+import com.xiangxue.compose.fragments.CategoryFragment;
+import com.xiangxue.compose.fragments.ServiceFragment;
 import com.xiangxue.news.homefragment.headlinenews.HeadlineNewsFragment;
 
 import java.lang.reflect.Field;
