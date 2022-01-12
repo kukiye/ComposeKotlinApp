@@ -4,44 +4,49 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.kuki.base.compose.composablemodel.IBaseComposableModel
+import com.kuki.base.compose.lazycolumn.LoadMoreListHandler
+import com.kuki.base.loadmore.IBaseModelListener
+import com.kuki.base.loadmore.PagingResult
 import com.xiangxue.network.TecentNetworkWithoutEnvelopeApi
 import com.xiangxue.network.apiresponse.NetworkResponse
 import com.xiangxue.news.homefragment.api.NewsApiInterface
-import com.xiangxue.news.homefragment.api.NewsListBean
-import com.xiangxue.news.R
-import com.xiangxue.news.databinding.FragmentNewsBinding
-import com.xiangxue.news.homefragment.api.Contentlist
 import com.xiangxue.news.homefragment.newslist.composables.titlecomposable.TitleComposable
 import com.xiangxue.news.homefragment.newslist.composables.titlecomposable.TitleComposableModel
 import com.xiangxue.news.homefragment.newslist.composables.titlepicturecomposable.TitlePictureComposable
 import com.xiangxue.news.homefragment.newslist.composables.titlepicturecomposable.TitlePictureComposableModel
+import com.xiangxue.news.homefragment.newslist.model.NewsListModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.ArrayList
-import com.kuki.base.compose.lazycolumn.LoadMoreListHandler
 
 /**
  * Created by Allen on 2017/7/20.
  * 保留所有版权，未经允许请不要分享到互联网和其他人
  */
-class NewsListFragment : Fragment() {
-    private val contentlist = mutableStateListOf<Any>()
-    private var mPage = 1
+class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableModel>> {
+
+    private lateinit var newsListModel: NewsListModel
+    private val contentlist = mutableStateListOf<IBaseComposableModel>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        load()
+        newsListModel = NewsListModel(
+            arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_ID),
+            arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_NAME), this
+        )
+        newsListModel.refresh()
+
         return ComposeView(requireContext()).apply {
             setContent {
 
@@ -68,47 +73,12 @@ class NewsListFragment : Fragment() {
 
                 //上拉加载更多
                 LoadMoreListHandler(listState = listState) {
-                    load()
+                    newsListModel.load()
                 }
             }
         }
     }
 
-    private fun load() {
-        lifecycleScope.launch {
-
-            val newsListBean =
-                TecentNetworkWithoutEnvelopeApi.getService(NewsApiInterface::class.java)
-                    .getNewsList(
-                        arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_ID),
-                        arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_NAME), mPage.toString()
-                    )
-            when (newsListBean) {
-                is NetworkResponse.Success -> {
-                    if (mPage == 1) {
-                        contentlist.clear()
-                    }
-                    for (source in (newsListBean.body)!!.pagebean!!.contentlist!!) {
-                        if (source.imageurls != null && source.imageurls.size > 1) {
-                            contentlist.add(
-                                TitlePictureComposableModel(
-                                    source.title ?: "",
-                                    source.imageurls[0].url ?: ""
-                                )
-                            )
-                        } else {
-                            contentlist.add(TitleComposableModel(source.title ?: ""))
-                        }
-                    }
-
-                    mPage++
-                }
-                else -> {
-
-                }
-            }
-        }
-    }
 
     companion object {
         const val BUNDLE_KEY_PARAM_CHANNEL_ID = "bundle_key_param_channel_id"
@@ -120,6 +90,21 @@ class NewsListFragment : Fragment() {
             bundle.putString(BUNDLE_KEY_PARAM_CHANNEL_NAME, channelName)
             fragment.arguments = bundle
             return fragment
+        }
+    }
+
+    override fun onLoadSuccess(data: List<IBaseComposableModel>, pageResult: PagingResult?) {
+        if (pageResult?.isFirstPage == true) {
+            contentlist.clear()
+        }
+        if (data != null) {
+            contentlist.addAll(data)
+        }
+    }
+
+    override fun onLoadFail(prompt: String?, pageResult: PagingResult?) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            Toast.makeText(context, prompt, Toast.LENGTH_LONG).show()
         }
     }
 }
