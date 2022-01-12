@@ -61,6 +61,9 @@ dependencies {
     api 'androidx.activity:activity-compose:1.4.0'
     // Compose Material Design
     api 'androidx.compose.material:material:1.0.5'
+
+    api 'com.google.auto.service:auto-service:1.0-rc7'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc7'
 }
 repositories {
     mavenCentral()

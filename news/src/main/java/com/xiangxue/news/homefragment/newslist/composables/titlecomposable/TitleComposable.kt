@@ -10,15 +10,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.auto.service.AutoService
+import com.kuki.base.compose.composablemanager.IComposableService
+
+//创建服务来实现IComposableService接口
+@AutoService(IComposableService::class)
+class TitleComposableService() : IComposableService<TitleComposableModel> {
+    override val content: @Composable (item: TitleComposableModel) -> Unit = {
+        TitleComposable(composableModel = it)
+    }
+    override val name: String = TitleComposableModel::class.java.name
+}
+
 
 @Composable
-fun TitleComposable(composableModel: TitleComposableModel){
+fun TitleComposable(composableModel: TitleComposableModel) {
     Box(modifier = Modifier) {
         Text(
             text = composableModel.title,
             color = Color.Black,
             fontSize = 25.sp,
-            modifier = Modifier.align(Alignment.BottomStart).padding(15.dp)
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(15.dp)
         )
     }
 
@@ -28,6 +42,6 @@ fun TitleComposable(composableModel: TitleComposableModel){
         Modifier
             .background(Color.Gray)
             .fillMaxWidth()
-            .height((1/pxValue).dp)
+            .height((1 / pxValue).dp)
     )
 }

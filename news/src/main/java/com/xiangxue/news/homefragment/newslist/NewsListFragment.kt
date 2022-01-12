@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.kuki.base.compose.composablemanager.ComposableItem
+import com.kuki.base.compose.composablemanager.ComposableServiceManager
 import com.kuki.base.compose.composablemodel.IBaseComposableModel
 import com.kuki.base.compose.lazycolumn.LoadMoreListHandler
 import com.kuki.base.loadmore.IBaseModelListener
@@ -36,6 +39,7 @@ class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableMode
 
     private lateinit var newsListModel: NewsListModel
     private val contentlist = mutableStateListOf<IBaseComposableModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,6 +50,8 @@ class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableMode
             arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_NAME), this
         )
         newsListModel.refresh()
+
+        ComposableServiceManager.collectServices()
 
         return ComposeView(requireContext()).apply {
             setContent {
@@ -62,12 +68,8 @@ class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableMode
                     ),
                     state = listState
                 ) {
-                    items(contentlist.size) {
-                        if (contentlist[it] is TitleComposableModel) {
-                            TitleComposable(contentlist[it] as TitleComposableModel)
-                        } else if (contentlist[it] is TitlePictureComposableModel) {
-                            TitlePictureComposable(contentlist[it] as TitlePictureComposableModel)
-                        }
+                    items(contentlist) {
+                       ComposableItem(item = it)
                     }
                 }
 

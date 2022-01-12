@@ -10,8 +10,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.auto.service.AutoService
+import com.kuki.base.compose.composablemanager.IComposableService
 import com.xiangxue.news.R
 import com.xiangxue.news.homefragment.newslist.commoncomposables.NetworkImage
+import com.xiangxue.news.homefragment.newslist.composables.titlecomposable.TitleComposable
+import com.xiangxue.news.homefragment.newslist.composables.titlecomposable.TitleComposableModel
+
+@AutoService(IComposableService::class)
+class TitlePictureComposableService() : IComposableService<TitlePictureComposableModel> {
+    override val content: @Composable (item: TitlePictureComposableModel) -> Unit = {
+        TitlePictureComposable(composableModel = it)
+    }
+    override val name: String = TitlePictureComposableModel::class.java.name
+}
 
 @Composable
 fun TitlePictureComposable(composableModel: TitlePictureComposableModel){
