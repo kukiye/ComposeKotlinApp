@@ -1,22 +1,26 @@
-package com.xiangxue.news.homefragment.headlinenews
+package com.xiangxue.news.homefragment.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
+import com.kuki.base.loadmore.IBaseModelListener
+import com.kuki.base.loadmore.PagingResult
 import com.xiangxue.network.TecentNetworkWithoutEnvelopeApi
 import com.xiangxue.network.apiresponse.NetworkResponse
 import com.xiangxue.news.homefragment.api.NewsApiInterface
 import com.xiangxue.news.R
 import com.xiangxue.news.databinding.FragmentHomeBinding
+import com.xiangxue.news.homefragment.api.Channel
 import kotlinx.coroutines.launch
 
-class HeadlineNewsFragment : Fragment() {
-    var adapter: HeadlineNewsFragmentAdapter? = null
+class HomeFragment : Fragment(), IBaseModelListener<List<Channel>> {
+    var adapter: HomeFragmentAdapter? = null
     var viewDataBinding: FragmentHomeBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,25 +29,28 @@ class HeadlineNewsFragment : Fragment() {
     ): View? {
         viewDataBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
-        adapter = HeadlineNewsFragmentAdapter(childFragmentManager)
+        adapter = HomeFragmentAdapter(childFragmentManager)
         viewDataBinding!!.tablayout.tabMode = TabLayout.MODE_SCROLLABLE
         viewDataBinding!!.viewpager.adapter = adapter
         viewDataBinding!!.tablayout.setupWithViewPager(viewDataBinding!!.viewpager)
         viewDataBinding!!.viewpager.offscreenPageLimit = 1
-        load()
+
+        val homeModel = HomeModel(this)
+        homeModel.refresh()
         return viewDataBinding!!.root
     }
 
-    protected fun load() {
+    override fun onLoadSuccess(data: List<Channel>, pageResult: PagingResult?) {
         lifecycleScope.launch {
-            when (val newsChannelsBean =
-                TecentNetworkWithoutEnvelopeApi.getService(NewsApiInterface::class.java)
-                    .getNewsChannelsWithoutEnvelope()) {
-                is NetworkResponse.Success -> {
-                    adapter!!.setChannels(newsChannelsBean!!.body.channelList)
-
-                }
-            }
+            adapter!!.setChannels(data)
         }
+    }
+
+    override fun onLoadFail(prompt: String?, pageResult: PagingResult?) {
+
+        lifecycleScope.launch {
+            Toast.makeText(context, prompt, Toast.LENGTH_SHORT).show()
+        }
+
     }
 }

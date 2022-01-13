@@ -1,6 +1,5 @@
 package com.xiangxue.news.homefragment.newslist.model
 
-import androidx.compose.runtime.mutableStateListOf
 import com.kuki.base.compose.composablemodel.IBaseComposableModel
 import com.kuki.base.loadmore.IBaseModelListener
 import com.kuki.base.loadmore.PagingResult
@@ -82,8 +81,8 @@ class NewsListModel(
 
     }
 
-    private fun onFailure(e: String?) {
-        iBaseModelListener.onLoadFail(e)
+    private fun onFailure(errorMsg: String?) {
+        iBaseModelListener.onLoadFail(errorMsg)
     }
 
 }

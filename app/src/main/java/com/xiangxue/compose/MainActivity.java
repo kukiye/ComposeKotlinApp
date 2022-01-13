@@ -23,14 +23,14 @@ import com.xiangxue.compose.databinding.ActivityMainBinding;
 import com.xiangxue.compose.fragments.AccountFragment;
 import com.xiangxue.compose.fragments.CategoryFragment;
 import com.xiangxue.compose.fragments.ServiceFragment;
-import com.xiangxue.news.homefragment.headlinenews.HeadlineNewsFragment;
+import com.xiangxue.news.homefragment.home.HomeFragment;
 
 import java.lang.reflect.Field;
 
 import q.rorbin.badgeview.QBadgeView;
 
 public class MainActivity extends AppCompatActivity {
-    private Fragment mHomeFragment = new HeadlineNewsFragment();
+    private Fragment mHomeFragment = new HomeFragment();
     private CategoryFragment mCategoryFragment = new CategoryFragment();
     private ServiceFragment mServiceFragment = new ServiceFragment();
     private AccountFragment mAccountFragment = new AccountFragment();

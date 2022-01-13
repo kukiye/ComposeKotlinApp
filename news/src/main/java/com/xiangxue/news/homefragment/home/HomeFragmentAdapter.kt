@@ -1,4 +1,4 @@
-package com.xiangxue.news.homefragment.headlinenews
+package com.xiangxue.news.homefragment.home
 
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
@@ -11,7 +11,7 @@ import com.xiangxue.news.homefragment.newslist.NewsListFragment
  * Created by Allen on 2017/7/20.
  * 保留所有版权，未经允许请不要分享到互联网和其他人
  */
-class HeadlineNewsFragmentAdapter(fm: FragmentManager?) : FragmentPagerAdapter(
+class HomeFragmentAdapter(fm: FragmentManager?) : FragmentPagerAdapter(
     fm!!
 ) {
     private var channelSize = -1
