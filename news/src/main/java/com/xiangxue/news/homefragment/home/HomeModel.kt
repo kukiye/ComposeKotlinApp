@@ -1,9 +1,7 @@
 package com.xiangxue.news.homefragment.home
 
-import androidx.lifecycle.lifecycleScope
-import com.kuki.base.compose.composablemodel.IBaseComposableModel
-import com.kuki.base.loadmore.IBaseModelListener
-import com.kuki.base.loadmore.PagingResult
+import com.kuki.base.model.BaseMvvmModel
+import com.kuki.base.model.IBaseModelListener
 import com.xiangxue.network.TecentNetworkWithoutEnvelopeApi
 import com.xiangxue.network.apiresponse.NetworkResponse
 import com.xiangxue.news.homefragment.api.Channel
@@ -18,14 +16,10 @@ package：com.xiangxue.news.homefragment.home
 description :
  */
 class HomeModel(
-    private val iBaseModelListener: IBaseModelListener<List<Channel>>
-) {
+    iBaseModelListener: IBaseModelListener<List<Channel>>
+) : BaseMvvmModel<List<Channel>>(iBaseModelListener = iBaseModelListener) {
 
-    fun refresh() {
-        load()
-    }
-
-    fun load() {
+    override fun load() {
         GlobalScope.launch {
             when (val newsChannelsBean =
                 TecentNetworkWithoutEnvelopeApi.getService(NewsApiInterface::class.java)
@@ -49,15 +43,12 @@ class HomeModel(
 
 
     private fun onSuccess(channelList: List<Channel>) {
-        iBaseModelListener.onLoadSuccess(
-            channelList,
-            PagingResult(false, false, false)
-        )
+        notifyResultToListener(channelList)
 
     }
 
     private fun onFailure(errorMsg: String?) {
-        iBaseModelListener.onLoadFail(errorMsg)
+        notifyFailToListener(errorMsg)
     }
 
 }

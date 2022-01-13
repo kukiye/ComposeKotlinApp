@@ -1,8 +1,8 @@
 package com.xiangxue.news.homefragment.newslist.model
 
 import com.kuki.base.compose.composablemodel.IBaseComposableModel
-import com.kuki.base.loadmore.IBaseModelListener
-import com.kuki.base.loadmore.PagingResult
+import com.kuki.base.model.BaseMvvmModel
+import com.kuki.base.model.IBaseModelListener
 import com.xiangxue.network.TecentNetworkWithoutEnvelopeApi
 import com.xiangxue.network.apiresponse.NetworkResponse
 import com.xiangxue.news.homefragment.api.NewsApiInterface
@@ -22,24 +22,17 @@ description :
 class NewsListModel(
     private val channelId: String?,
     private val channelName: String?,
-    private val iBaseModelListener: IBaseModelListener<List<IBaseComposableModel>>
-) {
+    iBaseModelListener: IBaseModelListener<List<IBaseComposableModel>>
+) : BaseMvvmModel<List<IBaseComposableModel>>(true, iBaseModelListener = iBaseModelListener) {
 
-    private var mPage: Int = 1
-
-    fun refresh() {
-        mPage = 1
-        load()
-    }
-
-    fun load() {
+    override fun load() {
         GlobalScope.launch {
 
             val newsListBean =
                 TecentNetworkWithoutEnvelopeApi.getService(NewsApiInterface::class.java)
                     .getNewsList(
                         channelId,
-                        channelName, mPage.toString()
+                        channelName, mPageNumber.toString()
                     )
             when (newsListBean) {
                 is NetworkResponse.Success -> {
@@ -73,16 +66,12 @@ class NewsListModel(
                 baseViewModels.add(viewModel)
             }
         }
-        iBaseModelListener.onLoadSuccess(
-            baseViewModels,
-            PagingResult(mPage == 1, baseViewModels.isEmpty(), baseViewModels.isNotEmpty())
-        )
-        mPage++
+        notifyResultToListener(baseViewModels)
 
     }
 
     private fun onFailure(errorMsg: String?) {
-        iBaseModelListener.onLoadFail(errorMsg)
+       notifyFailToListener(errorMsg)
     }
 
 }

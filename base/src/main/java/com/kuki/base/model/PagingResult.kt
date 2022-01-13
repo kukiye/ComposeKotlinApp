@@ -1,4 +1,4 @@
-package com.kuki.base.loadmore
+package com.kuki.base.model
 
 /**
 author ：yeton

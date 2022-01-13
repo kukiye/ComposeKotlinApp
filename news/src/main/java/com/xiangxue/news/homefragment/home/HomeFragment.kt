@@ -9,11 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
-import com.kuki.base.loadmore.IBaseModelListener
-import com.kuki.base.loadmore.PagingResult
-import com.xiangxue.network.TecentNetworkWithoutEnvelopeApi
-import com.xiangxue.network.apiresponse.NetworkResponse
-import com.xiangxue.news.homefragment.api.NewsApiInterface
+import com.kuki.base.model.IBaseModelListener
+import com.kuki.base.model.PagingResult
 import com.xiangxue.news.R
 import com.xiangxue.news.databinding.FragmentHomeBinding
 import com.xiangxue.news.homefragment.api.Channel

@@ -18,15 +18,8 @@ import com.kuki.base.compose.composablemanager.ComposableItem
 import com.kuki.base.compose.composablemanager.ComposableServiceManager
 import com.kuki.base.compose.composablemodel.IBaseComposableModel
 import com.kuki.base.compose.lazycolumn.LoadMoreListHandler
-import com.kuki.base.loadmore.IBaseModelListener
-import com.kuki.base.loadmore.PagingResult
-import com.xiangxue.network.TecentNetworkWithoutEnvelopeApi
-import com.xiangxue.network.apiresponse.NetworkResponse
-import com.xiangxue.news.homefragment.api.NewsApiInterface
-import com.xiangxue.news.homefragment.newslist.composables.titlecomposable.TitleComposable
-import com.xiangxue.news.homefragment.newslist.composables.titlecomposable.TitleComposableModel
-import com.xiangxue.news.homefragment.newslist.composables.titlepicturecomposable.TitlePictureComposable
-import com.xiangxue.news.homefragment.newslist.composables.titlepicturecomposable.TitlePictureComposableModel
+import com.kuki.base.model.IBaseModelListener
+import com.kuki.base.model.PagingResult
 import com.xiangxue.news.homefragment.newslist.model.NewsListModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,7 +68,7 @@ class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableMode
 
                 //上拉加载更多
                 LoadMoreListHandler(listState = listState) {
-                    newsListModel.load()
+                    newsListModel.loadNextPage()
                 }
             }
         }
