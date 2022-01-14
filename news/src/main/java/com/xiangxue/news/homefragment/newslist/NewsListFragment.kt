@@ -38,20 +38,18 @@ class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableMode
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        ComposableServiceManager.collectServices()
         newsListModel = NewsListModel(
             arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_ID),
             arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_NAME), this
         )
         newsListModel.refresh()
 
-        ComposableServiceManager.collectServices()
-
         return ComposeView(requireContext()).apply {
             setContent {
-
                 //记录列表状态
                 val listState = rememberLazyListState()
-
                 LazyColumn(
                     contentPadding = PaddingValues(
                         start = 16.dp,

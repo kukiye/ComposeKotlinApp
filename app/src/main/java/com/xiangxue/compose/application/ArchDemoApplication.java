@@ -2,6 +2,7 @@ package com.xiangxue.compose.application;
 
 import android.app.Application;
 
+import com.kuki.base.preference.PreferencesUtil;
 import com.xiangxue.network.base.BaseNetworkApi;
 
 /**
@@ -14,5 +15,6 @@ public class ArchDemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         BaseNetworkApi.Companion.init(new NetworkRequestInfo(this));
+        PreferencesUtil.init(this);
     }
 }

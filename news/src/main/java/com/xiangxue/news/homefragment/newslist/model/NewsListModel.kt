@@ -23,7 +23,11 @@ class NewsListModel(
     private val channelId: String?,
     private val channelName: String?,
     iBaseModelListener: IBaseModelListener<List<IBaseComposableModel>>
-) : BaseMvvmModel<List<IBaseComposableModel>>(true, iBaseModelListener = iBaseModelListener) {
+) : BaseMvvmModel<NewsListBean, List<IBaseComposableModel>>(
+    true,
+    iBaseModelListener = iBaseModelListener,
+    mCachedPreferenceKey = "news_list_model_${channelId}"
+) {
 
     override fun load() {
         GlobalScope.launch {
@@ -66,12 +70,12 @@ class NewsListModel(
                 baseViewModels.add(viewModel)
             }
         }
-        notifyResultToListener(baseViewModels)
+        notifyResultToListener(body, baseViewModels, false)
 
     }
 
     private fun onFailure(errorMsg: String?) {
-       notifyFailToListener(errorMsg)
+        notifyFailToListener(errorMsg)
     }
 
 }
