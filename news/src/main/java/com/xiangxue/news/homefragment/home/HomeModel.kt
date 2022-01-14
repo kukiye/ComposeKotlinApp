@@ -32,7 +32,7 @@ class HomeModel(
                 TecentNetworkWithoutEnvelopeApi.getService(NewsApiInterface::class.java)
                     .getNewsChannelsWithoutEnvelope()) {
                 is NetworkResponse.Success -> {
-                    onSuccess(newsChannelsBean!!.body)
+                    onDataTransform(newsChannelsBean!!.body, false)
                 }
                 is NetworkResponse.ApiError -> {
                     onFailure(newsChannelsBean.body.toString())
@@ -47,14 +47,12 @@ class HomeModel(
         }
     }
 
-
-    private fun onSuccess(body: NewsChannelsBean) {
-        notifyResultToListener(body, body.channelList, false)
-
+    override fun onFailure(errorMsg: String?) {
+        notifyFailToListener(errorMsg)
     }
 
-    private fun onFailure(errorMsg: String?) {
-        notifyFailToListener(errorMsg)
+    override fun onDataTransform(networkData: NewsChannelsBean, isFromCache: Boolean) {
+        notifyResultToListener(networkData, networkData.channelList, isFromCache)
     }
 
 }

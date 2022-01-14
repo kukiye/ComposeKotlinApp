@@ -1,6 +1,8 @@
 package com.kuki.base.model
 
-import android.util.Log
+import com.kuki.base.preference.BasicDataPreferenceUtil
+import com.kuki.base.utils.GenericUtils
+import com.kuki.base.utils.MoshiUtils
 
 /**
 author ：yeton
@@ -15,10 +17,10 @@ abstract class BaseMvvmModel<NETWORK_DATA, RESULT_DATA>(
     private val iBaseModelListener: IBaseModelListener<RESULT_DATA>,
     private val mCachedPreferenceKey: String? = null,//缓存到SharedPerference的Key，有就缓存，没有就不缓存
     private val apkPredefinedData: String? = null//apk预置缓存数据
-) {
+) : MvvmDataTransformer<NETWORK_DATA> {
 
     //是否在加载中 预防重复加载
-    protected var mIsLoading = false
+    private var mIsLoading = false
 
     //页码
     var mPageNumber = initPagerNumber
@@ -29,7 +31,41 @@ abstract class BaseMvvmModel<NETWORK_DATA, RESULT_DATA>(
             if (isPaging) {
                 mPageNumber = initPagerNumber
             }
+
+            //获取缓存数据
+            loadFromCache()
             load()
+        }
+    }
+
+    private fun loadFromCache() {
+        if (mCachedPreferenceKey != null) {
+            val cacheData: CacheData? = MoshiUtils.fromJson(
+                BasicDataPreferenceUtil.getInstance().getString(mCachedPreferenceKey),
+                CacheData::class.java
+            )
+            if (cacheData != null) {
+                val saveData: NETWORK_DATA? = MoshiUtils.fromJson(
+                    cacheData.getNetworkDataString() ?: "",
+                    GenericUtils.getGenericType(this) as Class<NETWORK_DATA>
+                )
+                //调用子类的解析数据的方法
+                if (saveData != null) {
+                    onDataTransform(saveData, true)
+                }
+            } else {
+                if (apkPredefinedData != null) {
+                    val saveData: NETWORK_DATA? = MoshiUtils.fromJson(
+                        apkPredefinedData,
+                        GenericUtils.getGenericType(this) as Class<NETWORK_DATA>
+                    )
+
+                    //调用子类的解析数据的方法
+                    if (saveData != null) {
+                        onDataTransform(saveData, true)
+                    }
+                }
+            }
         }
     }
 
@@ -83,7 +119,11 @@ abstract class BaseMvvmModel<NETWORK_DATA, RESULT_DATA>(
 
     protected open fun notifyFailToListener(errorMsg: String?) {
         if (iBaseModelListener != null) {
-            iBaseModelListener.onLoadFail(errorMsg)
+            if (isPaging) {
+                iBaseModelListener.onLoadFail(errorMsg, PagingResult(true, isFirstPage(), false))
+            } else {
+                iBaseModelListener.onLoadFail(errorMsg)
+            }
         }
         mIsLoading = false
     }

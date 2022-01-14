@@ -1,4 +1,4 @@
-package com.xiangxue.base.utils
+package com.kuki.base.utils
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types

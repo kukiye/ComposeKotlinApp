@@ -3,7 +3,7 @@ package com.kuki.base.model
 import com.kuki.base.preference.BasicDataPreferenceUtil
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import com.xiangxue.base.utils.MoshiUtils
+import com.kuki.base.utils.MoshiUtils
 
 @JsonClass(generateAdapter = true)
 class CacheData {

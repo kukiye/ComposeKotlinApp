@@ -40,7 +40,7 @@ class NewsListModel(
                     )
             when (newsListBean) {
                 is NetworkResponse.Success -> {
-                    onSuccess(newsListBean.body)
+                    onDataTransform(newsListBean.body, false)
                 }
                 is NetworkResponse.ApiError -> {
                     onFailure(newsListBean.body.toString())
@@ -55,9 +55,13 @@ class NewsListModel(
         }
     }
 
-    private fun onSuccess(body: NewsListBean?) {
+    override fun onFailure(errorMsg: String?) {
+        notifyFailToListener(errorMsg)
+    }
+
+    override fun onDataTransform(networkData: NewsListBean, isFromCache: Boolean) {
         val baseViewModels: ArrayList<IBaseComposableModel> = ArrayList<IBaseComposableModel>()
-        for (newsBean in body!!.pagebean!!.contentlist!!) {
+        for (newsBean in networkData!!.pagebean!!.contentlist!!) {
             if (newsBean.imageurls != null && newsBean.imageurls.size > 1) {
                 val viewModel =
                     TitlePictureComposableModel(
@@ -70,12 +74,7 @@ class NewsListModel(
                 baseViewModels.add(viewModel)
             }
         }
-        notifyResultToListener(body, baseViewModels, false)
-
-    }
-
-    private fun onFailure(errorMsg: String?) {
-        notifyFailToListener(errorMsg)
+        notifyResultToListener(networkData, baseViewModels, isFromCache)
     }
 
 }
