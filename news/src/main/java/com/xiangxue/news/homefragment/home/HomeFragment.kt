@@ -9,14 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
-import com.kuki.base.model.IBaseModelListener
 import com.kuki.base.model.PagingResult
 import com.xiangxue.news.R
 import com.xiangxue.news.databinding.FragmentHomeBinding
 import com.xiangxue.news.homefragment.api.Channel
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), IBaseModelListener<List<Channel>> {
+class HomeFragment : Fragment(){
     var adapter: HomeFragmentAdapter? = null
     var viewDataBinding: FragmentHomeBinding? = null
     override fun onCreateView(
@@ -32,18 +31,18 @@ class HomeFragment : Fragment(), IBaseModelListener<List<Channel>> {
         viewDataBinding!!.tablayout.setupWithViewPager(viewDataBinding!!.viewpager)
         viewDataBinding!!.viewpager.offscreenPageLimit = 1
 
-        val homeModel = HomeModel(this)
-        homeModel.refresh()
+        val homeViewModel = HomeViewModel(this)
+        homeViewModel.refresh()
         return viewDataBinding!!.root
     }
 
-    override fun onLoadSuccess(data: List<Channel>, pageResult: PagingResult?) {
+     fun onLoadSuccess(data: List<Channel>, pageResult: PagingResult?) {
         lifecycleScope.launch {
             adapter!!.setChannels(data)
         }
     }
 
-    override fun onLoadFail(prompt: String?, pageResult: PagingResult?) {
+     fun onLoadFail(prompt: String?, pageResult: PagingResult?) {
 
         lifecycleScope.launch {
             Toast.makeText(context, prompt, Toast.LENGTH_SHORT).show()

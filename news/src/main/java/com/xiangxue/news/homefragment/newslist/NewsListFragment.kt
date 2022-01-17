@@ -21,6 +21,7 @@ import com.kuki.base.compose.lazycolumn.LoadMoreListHandler
 import com.kuki.base.model.IBaseModelListener
 import com.kuki.base.model.PagingResult
 import com.xiangxue.news.homefragment.newslist.model.NewsListModel
+import com.xiangxue.news.homefragment.newslist.viewmodel.NewslistViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -28,24 +29,17 @@ import kotlinx.coroutines.launch
  * Created by Allen on 2017/7/20.
  * 保留所有版权，未经允许请不要分享到互联网和其他人
  */
-class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableModel>> {
+class NewsListFragment : Fragment() {
 
-    private lateinit var newsListModel: NewsListModel
-    private val contentlist = mutableStateListOf<IBaseComposableModel>()
+    private lateinit var viewModel: NewslistViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        viewModel= NewslistViewModel(arguments = requireArguments())
         ComposableServiceManager.collectServices()
-        newsListModel = NewsListModel(
-            arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_ID),
-            arguments?.getString(BUNDLE_KEY_PARAM_CHANNEL_NAME), this
-        )
-        newsListModel.refresh()
-
         return ComposeView(requireContext()).apply {
             setContent {
                 //记录列表状态
@@ -59,14 +53,14 @@ class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableMode
                     ),
                     state = listState
                 ) {
-                    items(contentlist) {
+                    items(viewModel.contentlist) {
                        ComposableItem(item = it)
                     }
                 }
 
                 //上拉加载更多
                 LoadMoreListHandler(listState = listState) {
-                    newsListModel.loadNextPage()
+                    viewModel.loadNextPage()
                 }
             }
         }
@@ -86,18 +80,5 @@ class NewsListFragment : Fragment(), IBaseModelListener<List<IBaseComposableMode
         }
     }
 
-    override fun onLoadSuccess(data: List<IBaseComposableModel>, pageResult: PagingResult?) {
-        if (pageResult?.isFirstPage == true) {
-            contentlist.clear()
-        }
-        if (data != null) {
-            contentlist.addAll(data)
-        }
-    }
 
-    override fun onLoadFail(prompt: String?, pageResult: PagingResult?) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            Toast.makeText(context, prompt, Toast.LENGTH_LONG).show()
-        }
-    }
 }
