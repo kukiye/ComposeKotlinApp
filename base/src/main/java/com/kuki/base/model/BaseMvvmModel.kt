@@ -12,7 +12,7 @@ description :
  */
 abstract class BaseMvvmModel<NETWORK_DATA, RESULT_DATA>(
 
-    private val isPaging: Boolean = false,//是否分页获取数据
+    val isPaging: Boolean = false,//是否分页获取数据
     private val initPagerNumber: Int = 1,//初始化从第几页开始加载
     private val iBaseModelListener: IBaseModelListener<RESULT_DATA>,
     private val mCachedPreferenceKey: String? = null,//缓存到SharedPerference的Key，有就缓存，没有就不缓存

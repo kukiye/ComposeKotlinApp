@@ -1,5 +1,6 @@
 package com.xiangxue.news.homefragment.newslist
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +12,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.SavedStateViewModelFactory
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.savedstate.SavedStateRegistryOwner
 import com.kuki.base.compose.composablemanager.ComposableItem
 import com.kuki.base.compose.composablemanager.ComposableServiceManager
 import com.kuki.base.compose.composablemodel.IBaseComposableModel
@@ -31,14 +37,28 @@ import kotlinx.coroutines.launch
  */
 class NewsListFragment : Fragment() {
 
-    private lateinit var viewModel: NewslistViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel= NewslistViewModel(arguments = requireArguments())
+
+        val bundle = requireArguments()
+
+
+        val context = activity
+        val viewModel = ViewModelProvider(
+            context as ViewModelStoreOwner,
+            SavedStateViewModelFactory(
+                context.application,
+                context as SavedStateRegistryOwner,
+                bundle
+            )
+        )[bundle.getString(BUNDLE_KEY_PARAM_CHANNEL_ID) + bundle.getString(
+            BUNDLE_KEY_PARAM_CHANNEL_NAME
+        ), NewslistViewModel::class.java]
+
         ComposableServiceManager.collectServices()
         return ComposeView(requireContext()).apply {
             setContent {
@@ -53,14 +73,14 @@ class NewsListFragment : Fragment() {
                     ),
                     state = listState
                 ) {
-                    items(viewModel.contentlist) {
-                       ComposableItem(item = it)
+                    items(viewModel.dataList) {
+                        ComposableItem(item = it)
                     }
                 }
 
                 //上拉加载更多
                 LoadMoreListHandler(listState = listState) {
-                    viewModel.loadNextPage()
+                    viewModel.tryToLoadNextPage()
                 }
             }
         }
