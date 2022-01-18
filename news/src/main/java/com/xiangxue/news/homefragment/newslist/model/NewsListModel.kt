@@ -1,7 +1,7 @@
 package com.xiangxue.news.homefragment.newslist.model
 
 import com.kuki.base.compose.composablemodel.IBaseComposableModel
-import com.kuki.base.model.BaseMvvmModel
+import com.kuki.base.model.BaseModel
 import com.kuki.base.model.IBaseModelListener
 import com.xiangxue.network.TecentNetworkWithoutEnvelopeApi
 import com.xiangxue.network.apiresponse.NetworkResponse
@@ -9,6 +9,7 @@ import com.xiangxue.news.homefragment.api.NewsApiInterface
 import com.xiangxue.news.homefragment.api.NewsListBean
 import com.xiangxue.news.homefragment.newslist.composables.titlecomposable.TitleComposableModel
 import com.xiangxue.news.homefragment.newslist.composables.titlepicturecomposable.TitlePictureComposableModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -20,37 +21,36 @@ package：com.xiangxue.news.homefragment.newslist.model
 description :
  */
 class NewsListModel(
+    viewModelScope: CoroutineScope,
     private val channelId: String?,
     private val channelName: String?,
     iBaseModelListener: IBaseModelListener<List<IBaseComposableModel>>
-) : BaseMvvmModel<NewsListBean, List<IBaseComposableModel>>(
-    true,
+) : BaseModel<NewsListBean, List<IBaseComposableModel>>(
+    viewModelScope,
+    isPaging = true,
     iBaseModelListener = iBaseModelListener,
     mCachedPreferenceKey = "news_list_model_${channelId}"
 ) {
 
-    override fun load() {
-        GlobalScope.launch {
-
-            val newsListBean =
-                TecentNetworkWithoutEnvelopeApi.getService(NewsApiInterface::class.java)
-                    .getNewsList(
-                        channelId,
-                        channelName, mPageNumber.toString()
-                    )
-            when (newsListBean) {
-                is NetworkResponse.Success -> {
-                    onDataTransform(newsListBean.body, false)
-                }
-                is NetworkResponse.ApiError -> {
-                    onFailure(newsListBean.body.toString())
-                }
-                is NetworkResponse.NetworkError -> {
-                    onFailure(newsListBean.message.toString())
-                }
-                is NetworkResponse.UnknownError -> {
-                    onFailure(newsListBean.error?.message)
-                }
+    override suspend fun load() {
+        val newsListBean =
+            TecentNetworkWithoutEnvelopeApi.getService(NewsApiInterface::class.java)
+                .getNewsList(
+                    channelId,
+                    channelName, mPageNumber.toString()
+                )
+        when (newsListBean) {
+            is NetworkResponse.Success -> {
+                onDataTransform(newsListBean.body, false)
+            }
+            is NetworkResponse.ApiError -> {
+                onFailure(newsListBean.body.toString())
+            }
+            is NetworkResponse.NetworkError -> {
+                onFailure(newsListBean.message.toString())
+            }
+            is NetworkResponse.UnknownError -> {
+                onFailure(newsListBean.error?.message)
             }
         }
     }

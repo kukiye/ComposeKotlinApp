@@ -1,35 +1,24 @@
 package com.xiangxue.news.homefragment.newslist
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.SavedStateViewModelFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.kuki.base.compose.composablemanager.ComposableItem
 import com.kuki.base.compose.composablemanager.ComposableServiceManager
-import com.kuki.base.compose.composablemodel.IBaseComposableModel
 import com.kuki.base.compose.lazycolumn.LoadMoreListHandler
-import com.kuki.base.model.IBaseModelListener
-import com.kuki.base.model.PagingResult
-import com.xiangxue.news.homefragment.newslist.model.NewsListModel
-import com.xiangxue.news.homefragment.newslist.viewmodel.NewslistViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.xiangxue.news.homefragment.newslist.viewmodel.NewsListViewModel
 
 /**
  * Created by Allen on 2017/7/20.
@@ -57,7 +46,7 @@ class NewsListFragment : Fragment() {
             )
         )[bundle.getString(BUNDLE_KEY_PARAM_CHANNEL_ID) + bundle.getString(
             BUNDLE_KEY_PARAM_CHANNEL_NAME
-        ), NewslistViewModel::class.java]
+        ), NewsListViewModel::class.java]
 
         ComposableServiceManager.collectServices()
         return ComposeView(requireContext()).apply {

@@ -1,8 +1,11 @@
 package com.xiangxue.news.homefragment.home
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kuki.base.model.IBaseModelListener
 import com.kuki.base.model.PagingResult
+import com.kuki.base.viewmodel.BaseViewModel
 import com.xiangxue.news.homefragment.api.Channel
 
 /**
@@ -11,22 +14,10 @@ date : 2022/1/17 10:23
 package：com.xiangxue.news.homefragment.home
 description :
  */
-class HomeViewModel(private val view: HomeFragment) : ViewModel(),
-    IBaseModelListener<List<Channel>> {
+class HomeViewModel(savedStateHandle: SavedStateHandle) :
+    BaseViewModel<HomeModel, Channel>(savedStateHandle) {
 
-    private val homeModel = HomeModel(this)
-
-    fun refresh(){
-        homeModel.refresh()
+    override fun createModel(): HomeModel {
+        return HomeModel(viewModelScope, this)
     }
-
-    override fun onLoadSuccess(data: List<Channel>, pageResult: PagingResult?) {
-        view.onLoadSuccess(data, pageResult)
-    }
-
-    override fun onLoadFail(prompt: String?, pageResult: PagingResult?) {
-        view.onLoadFail(prompt, pageResult)
-    }
-
-
 }

@@ -62,4 +62,5 @@ dependencies {
     api 'androidx.compose.material:material:1.0.5'
 
     api("com.squareup.moshi:moshi-kotlin:1.12.0")
+    api "androidx.compose.ui:ui-tooling:$rootProject.compose_version"
 }

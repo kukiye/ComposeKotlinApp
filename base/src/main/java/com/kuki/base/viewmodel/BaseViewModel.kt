@@ -3,7 +3,7 @@ package com.kuki.base.viewmodel
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
-import com.kuki.base.model.BaseMvvmModel
+import com.kuki.base.model.BaseModel
 import com.kuki.base.model.IBaseModelListener
 import com.kuki.base.model.PagingResult
 
@@ -13,7 +13,7 @@ date : 2022/1/17 11:16
 package：com.kuki.base.viewmodel
 description :
  */
-abstract class BaseViewModel<MODEL : BaseMvvmModel<*, *>?, DATA>(val savedStateHandle: SavedStateHandle?) :
+abstract class BaseViewModel<MODEL : BaseModel<*, *>?, DATA>(val savedStateHandle: SavedStateHandle?) :
     ViewModel(), LifecycleObserver,
     IBaseModelListener<List<DATA>> {
 

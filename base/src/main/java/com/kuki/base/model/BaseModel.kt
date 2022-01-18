@@ -3,6 +3,8 @@ package com.kuki.base.model
 import com.kuki.base.preference.BasicDataPreferenceUtil
 import com.kuki.base.utils.GenericUtils
 import com.kuki.base.utils.MoshiUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
 author ：yeton
@@ -10,8 +12,8 @@ date : 2022/1/13 16:58
 package：com.kuki.base.model
 description :
  */
-abstract class BaseMvvmModel<NETWORK_DATA, RESULT_DATA>(
-
+abstract class BaseModel<NETWORK_DATA, RESULT_DATA>(
+    private val viewModelScope: CoroutineScope,
     val isPaging: Boolean = false,//是否分页获取数据
     private val initPagerNumber: Int = 1,//初始化从第几页开始加载
     private val iBaseModelListener: IBaseModelListener<RESULT_DATA>,
@@ -34,7 +36,10 @@ abstract class BaseMvvmModel<NETWORK_DATA, RESULT_DATA>(
 
             //获取缓存数据
             loadFromCache()
-            load()
+
+            viewModelScope.launch {
+                load()
+            }
         }
     }
 
@@ -72,7 +77,9 @@ abstract class BaseMvvmModel<NETWORK_DATA, RESULT_DATA>(
     open fun loadNextPage() {
         if (!mIsLoading) {
             mIsLoading = true
-            load()
+            viewModelScope.launch {
+                load()
+            }
         }
     }
 
@@ -80,7 +87,7 @@ abstract class BaseMvvmModel<NETWORK_DATA, RESULT_DATA>(
         return mPageNumber == initPagerNumber
     }
 
-    protected abstract fun load()
+    protected abstract suspend fun load()
 
     protected open fun notifyResultToListener(networkData: NETWORK_DATA, resultData: RESULT_DATA,
                                               isFromCache: Boolean) {
